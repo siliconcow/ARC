@@ -1,24 +1,30 @@
 from django import forms
+from django.forms.models import inlineformset_factory
 from django.views.generic import CreateView
 from django.forms import ModelForm
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from ajax_select.fields import AutoCompleteField
 from arc.models import *
+from arc.quoted import quoted_no_more
+from evoque.domain import Domain
+import os
+
 
 class SearchForm(forms.Form):
 
     q = AutoCompleteField(
             'ace',
             required=True,
-            help_text="Autocomplete will suggest ArbitraryRepeatableCommands you may use. <b>Try 'i sean connery' </b>",
+            help_text="Autocomplete will suggest ArbitraryRepeatableshortcuts you may use. <b>Try 'i sean connery' </b>",
             label='',
             attrs={'class': 'search-query span6', 'placeholder': 'Search ARCS'}
             )
 
+
 class AceForm(ModelForm):
-    class Meta:
-        model = Ace
+  class Meta:
+     model = Ace
 
 class Flash(object):
     message=""
@@ -38,21 +44,33 @@ def home(request):
         form=AceForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
-            command = form.cleaned_data['command']
+            shortcut = form.cleaned_data['shortcut']
             target = form.cleaned_data['target']
-            type = form.cleaned_data['type']
+            command_type = form.cleaned_data['command_type']
 
-            new_ace= Ace(name=name, command=command, target=target, type=type)
+            new_ace= Ace(name=name, shortcut=shortcut, target=target, command_type=command_type)
             new_ace.save()
             ctx['arc_added']=new_ace
         ctx['form_add']=form
 
     elif request.GET.get('q') is not None and len(request.GET.get('q').split()) > 0:
-        obj = request.GET.get('q').split()
-        reqstr = '%s' % ' '.join(map(str,obj[1:]))
-        ace = Ace.objects.filter(command=obj[0])
+        q = request.GET.get('q').split()
+        reqstr = '%s' % ' '.join(map(str,q[1:]))
+        ace = Ace.objects.filter(shortcut=q[0])
         if ace:
-            ctx['redirect'] = ace.get().target.replace('${args}', reqstr)
+            domain = Domain(os.path.abspath("."), restricted=True)
+            arglist = map(lambda x: 'arg'+x.__str__(), xrange(0, len(q)))
+            args = dict(zip(arglist, q))
+            args['args']=reqstr
+            target = ace.get().target
+            domain.set_template("target", src=target, data=args, from_string=True, quoting='str')
+            compiledTargetTmpl=domain.get_template("target")
+            result=compiledTargetTmpl.evoque()
+            template = ace.get().command_type.template
+            args['ace'] = result
+            domain.set_template("template", src=template, data=args, quoting=quoted_no_more, raw=False, from_string=True)
+            compiledTmpl=domain.get_template('template')
+            ctx['template'] = compiledTmpl.evoque()
         else:
             ctx['flash']=Flash(message="Come on now, that isn't a valid ARC. Please try again.", level="error")
     elif request.GET.get('q') is not None:

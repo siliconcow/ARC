@@ -10,11 +10,11 @@ class AceLookup(LookupChannel):
 
     def get_query(self,q,request):
         self.q=q.replace(' ', '')
-        return Ace.objects.filter(Q(command__icontains=self.q) | Q(command__istartswith=self.q) | Q(name__istartswith=self.q)).order_by('command')
+        return Ace.objects.filter(Q(shortcut__icontains=self.q) | Q(shortcut__istartswith=self.q) | Q(name__istartswith=self.q)).order_by('shortcut')
 
     def get_result(self,obj):
         u""" result is the simple text that is the completion of what the Ace typed """
-        return obj.command
+        return obj.shortcut
 
     def format_match(self,obj):
         """ (HTML) formatted item for display in the dropdown """

@@ -43,7 +43,7 @@
             </a>
             <ul class="dropdown-menu">
               {% for arc in arcs %}
-              <li> <a class="ARC" id="{{ arc.command }}" href="#"> {{ arc }} </a></li>
+              <li> <a class="ARC" id="{{ arc.shortcut }}" href="#"> {{ arc }} </a></li>
               {% endfor %}
             </ul>
             <div class="btn-group">
@@ -55,7 +55,8 @@
         <div class="span 4" style="text-align: left;">
           <h3> About <h3>
               <p> We repeat ourselves a lot in life. 
-              ARCs are simple user generated shortcuts for accomplishing similar tasks.  Create, share, and enjoy.
+              ARCs are simple user generated shortcuts for accomplishing common tasks.  Create, share, and enjoy.
+              It's also a bit like voluntary  XSS so please only run ARC you trust.
               </p>
             </div>
           </div>
@@ -89,10 +90,9 @@
           $(".ARC").click( function(){
               $("#id_q").val($(this).attr("id"));
           });
-
-          {% if redirect %}
-          window.open('{{ redirect }}', '_blank');
-          {% endif %}
         </script>
+          {% if template %}
+          {{template|safe}}
+          {% endif %}
       </body>
     </html>

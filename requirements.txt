@@ -1,0 +1,8 @@
+Django==1.4
+django-ajax-selects==1.2.4
+django-dajax==0.8.4
+django-dajaxice==0.2
+evoque==0.4
+ipdb==0.6.1
+ipython==0.12
+wsgiref==0.1.2
