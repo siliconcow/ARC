@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ARC (Arbitrary Repeatable Command)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 200px; /* 60px to make the container go all the way to the bottom of the topbar */
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        {% if arc_added %}
+        <div class="alert alert-success">
+          <p> Well Done!  You just added an ARC:  {{arc_added}}
+        </div>
+        {% endif %}
+        {% if flash %}
+        <div class="alert alert-{{flash.level}}">
+          <p> {{ flash }} </p>
+        </div>
+        {% endif %}
+
+
+        <form action="{% url home %}" method="GET">
+          {{ form }}
+        </form>
+        <div class="btn-toolbar" style="margin-top: 20px; text-align: left;" >
+          <div class="btn-group">
+            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+              List all ARCS
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              {% for arc in arcs %}
+              <li> <a href="#"> {{ arc }} </a></li>
+              {% endfor %}
+            </ul>
+            <div class="btn-group">
+              <a class="btn dropdown-toogle" href="#addARC" data-toggle="modal" > Add ARC </a>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+        <div class="span 4" style="text-align: left;">
+          <h3> About <h3>
+              <p> We repeat ourselves a lot in life. 
+              ARCs are simple user generated shortcuts for accomplishing similar tasks.  Create, share, and enjoy.
+              </p>
+            </div>
+          </div>
+          </div>
+        </div> <!-- /container -->
+
+        <div class="modal hide fade" id="addARC">
+          <div class="modal-header">
+            <h3>ADD an ARC</h3>
+          </div>
+          <div class="modal-body">
+            <p>
+            <form action="{% url home %}" method="POST">
+              {{ form_add }}
+              {% csrf_token %}
+              </p>
+            </div>
+            <div class="modal-footer">
+              <a class="btn close" data-dismiss="modal">Close</a>
+              <input type="submit" class="btn btn-primary" value="Add ARC"></input>
+            </form>
+          </div>
+        </div> 
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="{{ STATIC_URL }}/bootstrap/js/bootstrap.js"></script>
+        {% if form_add.errors %}
+        <script> $('#addARC').modal('show') </script>
+        {% endif %}
+      </body>
+    </html>
