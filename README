@@ -1,5 +1,9 @@
 ARC is a simple interface for creating reusable "ArbitraryRepeatableCommands".  Right now it just does HTTP redirects but those are pretty cool right?
 
+Getting Started:
+checkout
+run(or read) start.sh
+
 BSD'd:
 
 Copyright (c) 2012, David Challoner

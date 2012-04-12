@@ -2,6 +2,7 @@ from django import forms
 from django.forms.models import inlineformset_factory
 from django.views.generic import CreateView
 from django.forms import ModelForm
+from django.utils.html import escape
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from ajax_select.fields import AutoCompleteField
@@ -37,6 +38,13 @@ class Flash(object):
     def __str__(self):
         return self.message
 
+def escapeTargets(arcs):
+    for arc in arcs:
+        arc.escaped_target=escape(escape(arc.target))  ##this is some nonesense required because you have to double-escape code in HTML attribtues.
+        arc.escaped_command=escape(escape(arc.command_type.template))  ##this is some nonesense required because you have to double-escape code in HTML attribtues.
+        arc.escaped_comment=escape(escape(arc.comment))  ##this is some nonesense required because you have to double-escape code in HTML attribtues.
+    return arcs
+
 def home(request):
     
     ctx = {}
@@ -61,6 +69,8 @@ def home(request):
                 new_ace= Ace(name=name, shortcut=shortcut, target=target, command_type=command_type)
                 new_ace.save()
                 ctx['arc_added']=new_ace
+        else:
+            ctx['flash']=Flash(message="Sorry, we couldn't add that ARC. Please try again", level='alert-block')
         ctx['form_add']=form
 
     elif request.GET.get('q') is not None and len(request.GET.get('q').split()) > 0:
@@ -70,18 +80,23 @@ def home(request):
         if ace:
             arglist = map(lambda x: 'arg'+x.__str__(), xrange(0, len(q)))
             args = dict(zip(arglist, q))
+            if len(args) is 1:  #NameError owns evoque I guess
+                args["arg1"] = None
             args['args']=reqstr
             target = ace.get().target
             domain.set_template("target", src=target, data=args, from_string=True, quoting='str')
             compiledTargetTmpl=domain.get_template("target")
             result=compiledTargetTmpl.evoque()
+            if ace.get().command_type.name == u'redirect':
+                return redirect(result) 
             template = ace.get().command_type.template
             args['ace'] = result
-            domain.set_template("template", src=template, data=args, quoting=quoted_no_more, raw=False, from_string=True)
+            domain.set_template("template", src=template, data=args, quoting='str', raw=False, from_string=True)
             compiledTmpl=domain.get_template('template')
             ctx['template'] = compiledTmpl.evoque()
         else:
-            ctx['flash']=Flash(message="Come on now, that isn't a valid ARC. Please try again.", level="error")
+            gotoGoogle='/?q=g+%s' % ''.join(map(str,q))
+            return redirect(gotoGoogle) # not found, it's google's problem now (feature parity with pre-ACE)
     elif request.GET.get('q') is not None:
         ctx['flash']=Flash(message="Begin typing to search for ARCs.  Try creating your own ARCs!", level="info")
     initial = {'q':"Search ARCS"}
@@ -89,5 +104,5 @@ def home(request):
     ctx['form'] = form
     if 'form_add' not in ctx:
         ctx['form_add'] = AceForm
-    ctx['arcs'] = Ace.objects.all()
+    ctx['arcs'] = escapeTargets(Ace.objects.all())
     return render_to_response('home.html',ctx,context_instance=RequestContext(request))

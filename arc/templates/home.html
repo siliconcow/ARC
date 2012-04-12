@@ -8,14 +8,27 @@
 
 
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-darkness/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link href="{{ STATIC_URL}}gcp/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="{{ STATIC_URL}}gcp/prettify.js"></script>
+       <script type="text/javascript" src="{{ STATIC_URL}}jquery.xdomainajax.js"></script>
     <style>
       body {
         padding-top: 200px; /* 60px to make the container go all the way to the bottom of the topbar */
-        text-align: center;
+      }
+      .popover-title{
+        background-color: #272B30;
+      }
+      .popover-content {
+        background-color: #202328;
+        text-align: left;
       }
     </style>
+
   </head>
-  <body style="padding-top: 40px;">
+  <body style="padding-top: 40px;" onload="prettyPrint()">
 
     <div class="container">
       <!-- Main hero unit for a primary marketing message or call to action -->
@@ -36,33 +49,39 @@
         <form action="{% url home %}" method="GET">
           {{ form }}
         </form>
-        <div class="btn-toolbar" style="margin-top: 20px; text-align: left;" >
-          <div class="btn-group">
+        <div class="row btn-toolbar" style="margin-top: 20px; text-align: left;" >
+          <div class="span10 btn-group">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
               List all ARCS
               <span class="caret"></span>
             </a>
-            <ul class="dropdown-menu">
+            <div class="dropdown-menu">
               {% for arc in arcs %}
-              <li> <a class="ARC" id="{{ arc.shortcut }}" href="#"> {{ arc }} </a></li>
+              <div class="span3"> <a class="btn ARC" id="{{ arc.shortcut }}" href="#" data-content="<div class='well prettyprint'> {{arc.escaped_target}} </div> <h5> {{ arc.escaped_comment }} </h5>" rel="popover" data-original-title="{{arc.command_type.name}}"> {{ arc }} </a></div>
               {% endfor %}
-            </ul>
+            </div>
             <div class="btn-group">
               <a class="btn dropdown-toogle" href="#addARC" data-toggle="modal" > Add ARC </a>
             </div>
           </div>
         </div>
-          </div>
-        <div class="hero-unit">
-          <h4> About <h4>
-              <p> We repeat ourselves a lot in life. 
-              ARCs are simple user generated shortcuts for accomplishing common tasks.  Create, share, and enjoy.
-              It's also a bit like voluntary  XSS so please only run ARC you trust.
-              </p>
+      </div>
+      <div class="hero-unit">
+        <h2> Make ARC your default search! </h2>
+        <p>  ARC will search google for you if the query isn't an ARC so it's pretty much just gravy. </p>
+        <p>  <h4> In Firefox: </h4>  Type "about:config" search for keyword and enter "http://awesomevm:1111/?q=". </p>
+        <p>  <h4> In Chrome: </h4>  Right click the search bar and select this site as the default search engine. </p>
+      </div>
+      <div class="hero-unit">
+        <h4> About <h4>
+            <p> Most things that are done are repeated. 
+            ARCs are simple user generated shortcuts for accomplishing common tasks.  Create, share, and enjoy.
+            It's also a bit like voluntary  XSS so please only run ARC you trust.
+            </p>
           </div>
         </div> <!-- /container -->
 
-        
+
         <div class="modal hide fade" id="addARC">
           <div class="modal-header">
             <h3>ADD an ARC</h3>
@@ -80,19 +99,19 @@
             </form>
           </div>
         </div> 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script src="{{ STATIC_URL }}/bootstrap/js/bootstrap.js"></script>
         {% if form_add.errors %}
         <script> $('#addARC').modal('show') </script>
         {% endif %}
 
         <script>
+          $(".ARC").popover();
           $(".ARC").click( function(){
-              $("#id_q").val($(this).attr("id"));
+            $("#id_q").val($(this).attr("id"));
           });
         </script>
-          {% if template %}
-          {{template|safe}}
-          {% endif %}
+        {% if template %}
+        {{template|safe}}
+        {% endif %}
       </body>
     </html>

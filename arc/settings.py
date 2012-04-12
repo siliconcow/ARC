@@ -135,7 +135,7 @@ AJAX_LOOKUP_CHANNELS = {
                 'ace'  : ('arc.lookups', 'AceLookup')
                 }
 # magically include jqueryUI/js/css
-AJAX_SELECT_BOOTSTRAP = True
+AJAX_SELECT_BOOTSTRAP = False
 AJAX_SELECT_INLINES = 'inline'
 
 # A sample logging configuration. The only tangible logging
@@ -167,3 +167,5 @@ LOGGING = {
     }
 }
 DAJAXICE_MEDIA_PREFIX="dajaxice"
+
+QUERY_URL="SET QUERY URL IN CONF"
