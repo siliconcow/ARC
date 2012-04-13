@@ -23,7 +23,7 @@ class AceLookup(LookupChannel):
     def format_item_display(self,obj):
         """ (HTML) formatted item for displaying item in the selected deck area """
         boldq="<b>%s</b>" % self.q
-        return u"<div><i>%s</i></div>" % (escape(obj).replace(self.q, boldq))
+        return u"<div class='well'><h6>%s</h6><br><h6>%s<h6></div>" % (escape(obj).replace(self.q, boldq), obj.comment)
 
     def can_add(self,user,argmodel):
         return True

@@ -18,7 +18,7 @@ class SearchForm(forms.Form):
             required=True,
             help_text="Autocomplete will suggest ArbitraryRepeatableshortcuts you may use. <b>Try 'i sean connery' </b>",
             label='',
-            attrs={'class': 'search-query span6', 'placeholder': 'Search ARCS'}
+            attrs={'class': 'well search-query span6', 'placeholder': 'Search ARCS'}
             )
 
 
@@ -30,7 +30,7 @@ class Flash(object):
     message=""
     level="info"
 
-    def __init__(self, message, level):
+    def __init__(self, message, level=None):
         self.message=message
         self.level=level 
 
@@ -43,14 +43,23 @@ def home(request):
     if request.POST:
         form=AceForm(request.POST)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            shortcut = form.cleaned_data['shortcut']
-            target = form.cleaned_data['target']
-            command_type = form.cleaned_data['command_type']
+            success=True #ghetto flow control 
+            try:
+                testargs={'5','5'}
+                domain.set_template("test", src=form.cleaned_data['target'], data=testargs, from_string=True, quoting='str')
+                compiledTmpl=domain.get_template('test')
+            except:
+                ctx['flash']=Flash(message="Sorry, we couldn't add that ARC. The Target provided couldn't be compiled.  See http://evoque.gizmojo.org/syntax/ for details.", level="error")
+                success=False
+            if success:
+                name = form.cleaned_data['name']
+                shortcut = form.cleaned_data['shortcut']
+                target = form.cleaned_data['target']
+                command_type = form.cleaned_data['command_type']
 
-            new_ace= Ace(name=name, shortcut=shortcut, target=target, command_type=command_type)
-            new_ace.save()
-            ctx['arc_added']=new_ace
+                new_ace= Ace(name=name, shortcut=shortcut, target=target, command_type=command_type)
+                new_ace.save()
+                ctx['arc_added']=new_ace
         ctx['form_add']=form
 
     elif request.GET.get('q') is not None and len(request.GET.get('q').split()) > 0:

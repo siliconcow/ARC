@@ -126,6 +126,7 @@ INSTALLED_APPS = (
      'ajax_select',
      'dajaxice',
      'dajax',
+     'django_evolution',
      'arc'
 )
 
