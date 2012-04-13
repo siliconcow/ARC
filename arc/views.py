@@ -52,7 +52,7 @@ def home(request):
         reqstr = '%s' % ' '.join(map(str,obj[1:]))
         ace = Ace.objects.filter(command=obj[0])
         if ace:
-            return redirect(ace.get().target.replace('${args}', reqstr))  
+            ctx['redirect'] = ace.get().target.replace('${args}', reqstr)
         else:
             ctx['flash']=Flash(message="Come on now, that isn't a valid ARC. Please try again.", level="error")
     elif request.GET.get('q') is not None:

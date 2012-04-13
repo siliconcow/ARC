@@ -43,7 +43,7 @@
             </a>
             <ul class="dropdown-menu">
               {% for arc in arcs %}
-              <li> <a href="#"> {{ arc }} </a></li>
+              <li> <a class="ARC" id="{{ arc.command }}" href="#"> {{ arc }} </a></li>
               {% endfor %}
             </ul>
             <div class="btn-group">
@@ -84,5 +84,15 @@
         {% if form_add.errors %}
         <script> $('#addARC').modal('show') </script>
         {% endif %}
+
+        <script>
+          $(".ARC").click( function(){
+              $("#id_q").val($(this).attr("id"));
+          });
+
+          {% if redirect %}
+          window.open('{{ redirect }}', '_blank');
+          {% endif %}
+        </script>
       </body>
     </html>
