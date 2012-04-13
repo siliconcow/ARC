@@ -40,12 +40,13 @@ class Flash(object):
 def home(request):
     
     ctx = {}
+    domain = Domain(os.path.abspath("."), restricted=True)
     if request.POST:
         form=AceForm(request.POST)
         if form.is_valid():
             success=True #ghetto flow control 
             try:
-                testargs={'5','5'}
+                testargs={'args': 'test'}
                 domain.set_template("test", src=form.cleaned_data['target'], data=testargs, from_string=True, quoting='str')
                 compiledTmpl=domain.get_template('test')
             except:
@@ -67,7 +68,6 @@ def home(request):
         reqstr = '%s' % ' '.join(map(str,q[1:]))
         ace = Ace.objects.filter(shortcut=q[0])
         if ace:
-            domain = Domain(os.path.abspath("."), restricted=True)
             arglist = map(lambda x: 'arg'+x.__str__(), xrange(0, len(q)))
             args = dict(zip(arglist, q))
             args['args']=reqstr
