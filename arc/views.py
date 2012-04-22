@@ -5,6 +5,7 @@ from django.forms import ModelForm
 from django.utils.html import escape
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 from ajax_select.fields import AutoCompleteField
 from arc.models import *
 from arc.quoted import quoted_no_more
@@ -24,14 +25,11 @@ class SearchForm(forms.Form):
 
 
 class AceForm(ModelForm):
-  class Meta:
-     model = Ace
+    class Meta:
+        model = Ace
 
 class Flash(object):
-    message=""
-    level="info"
-
-    def __init__(self, message, level=None):
+    def __init__(self, message, level="info"):
         self.message=message
         self.level=level 
 
@@ -45,14 +43,15 @@ def escapeTargets(arcs):
         arc.escaped_comment=escape(escape(arc.comment))  ##this is some nonesense required because you have to double-escape code in HTML attribtues.
     return arcs
 
+#@login_required
 def home(request):
-    
+
     ctx = {}
-    domain = Domain(os.path.abspath("."), restricted=True)
+    domain = Domain(os.path.abspath("."), restricted=True) #marginal template security, people can still DOS us.   Don't tell anyone.
     if request.POST:
         form=AceForm(request.POST)
         if form.is_valid():
-            success=True #ghetto flow control 
+            success=True 
             try:
                 testargs={'args': 'test'}
                 domain.set_template("test", src=form.cleaned_data['target'], data=testargs, from_string=True, quoting='str')
@@ -74,15 +73,18 @@ def home(request):
         ctx['form_add']=form
 
     elif request.GET.get('q') is not None and len(request.GET.get('q').split()) > 0:
-        q = request.GET.get('q').split()
+        q = request.GET.get('q').lower().split()
         reqstr = '%s' % ' '.join(map(str,q[1:]))
         ace = Ace.objects.filter(shortcut=q[0])
         if ace:
-            arglist = map(lambda x: 'arg'+x.__str__(), xrange(0, len(q)))
-            args = dict(zip(arglist, q))
-            if len(args) is 1:  #NameError owns evoque I guess
+            arglist = map(lambda x: 'arg'+x.__str__(), xrange(0, len(q))) #creating arglist=['arg0','arg1','argN']
+            args = dict(zip(arglist, q)) #creating args={'arg0': 'some arguement', etc}
+            if len(args) is 1:  #so evoque doesn't die on empty arguments
                 args["arg1"] = None
-            args['args']=reqstr
+            args['jargs']="var %s = ['%s']" % ('args', "','".join(q[1:]))  #args in javascript
+            args['pargs']=q #pythonic args
+            args['args']=reqstr #args in a single string
+            args['arc']=ace.get().name
             target = ace.get().target
             domain.set_template("target", src=target, data=args, from_string=True, quoting='str')
             compiledTargetTmpl=domain.get_template("target")

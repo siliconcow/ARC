@@ -20,6 +20,7 @@ urlpatterns = patterns('',
      url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
+     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
      (r'^lookups/', include(ajax_select_urls)),
      url(r'^admin/', include(admin.site.urls)),
      (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),

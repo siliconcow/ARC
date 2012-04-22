@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ARC (Arbitrary Repeatable Command)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-darkness/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link href="{{ STATIC_URL}}gcp/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="{{ STATIC_URL}}gcp/prettify.js"></script>
+    <style>
+      body {
+        padding-top: 200px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+      .popover-title{
+        background-color: #272B30;
+      }
+      .popover-content {
+        background-color: #202328;
+        text-align: left;
+      }
+    </style>
+
+  </head>
+  <body style="padding-top: 40px;" onload="prettyPrint()">
+
+    <div class="container">
+      <div class="hero-unit hidden-phone"><h3>ARC: A command line for the internet. </h3></div>
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-unit">
+  <form method="POST">
+    {{ form }}
+    {% csrf_token %}
+    <input type="submit" value=">>">
+  </form>
+</div>
+{% endblock %}
