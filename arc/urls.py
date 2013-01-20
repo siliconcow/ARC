@@ -8,9 +8,6 @@ import arc.models
 import arc.views
 admin.autodiscover()
 
-from dajaxice.core import dajaxice_autodiscover
-dajaxice_autodiscover()
-
 urlpatterns = patterns('',
     # Examples:
       url(r'^$', 'arc.views.home', name='home'),
@@ -23,7 +20,6 @@ urlpatterns = patterns('',
      (r'^accounts/login/$', 'django.contrib.auth.views.login'),
      (r'^lookups/', include(ajax_select_urls)),
      url(r'^admin/', include(admin.site.urls)),
-     (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
 )
 if settings.DEBUG:
     urlpatterns += patterns('',

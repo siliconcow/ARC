@@ -8,7 +8,6 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from ajax_select.fields import AutoCompleteField
 from arc.models import *
-from arc.quoted import quoted_no_more
 from evoque.domain import Domain
 import os
 

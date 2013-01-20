@@ -2,8 +2,6 @@ from django.db import models
 
 
 class Ace(models.Model):
-
-    """ an actual singular human being """
     name = models.CharField(blank=False, max_length=100, help_text="The name of your ARC")
     shortcut = models.CharField(blank=False, unique=True, max_length=100, help_text="The characters used to execute your ARC")
     target = models.TextField(help_text="The string to pass to the command. <br> ${args} to use the entire query as a string <br>  ${arg0}..${argN} to use individual parameters <br>  You can also use basic python expressions with ${} or javascript. <br> ${pargs} gives you a python list of arguments, ${jargs} gives you javascript")

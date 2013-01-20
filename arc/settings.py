@@ -124,8 +124,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
      'django.contrib.admindocs',
      'ajax_select',
-     'dajaxice',
-     'dajax',
      'django_evolution',
      'arc'
 )
@@ -166,7 +164,6 @@ LOGGING = {
         },
     }
 }
-DAJAXICE_MEDIA_PREFIX="dajaxice"
 
 QUERY_URL="SET QUERY URL IN CONF"
 LOGIN_REDIRECT_URL="/"
