@@ -1,4 +1,8 @@
-ARC is a simple interface for creating reusable "ArbitraryRepeatableCommands".  Right now it just does HTTP redirects but those are pretty cool right?
+ARC is a simple interface for creating reusable "ArbitraryRepeatableCommands".
+
+Basically this javascript (and python - kinda) to write preprocessors to map "stach X" to a google image search of X processed through mustachify. 
+Or to do something like an imdb search, or a SMS, or upload to dropbox.
+
 
 Getting Started:
 checkout
